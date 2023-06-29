@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using Entity;
+
+namespace Facade
+{
+    public class FRandevular
+    {
+        public static DataTable Listele()
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("Listele2", Baglanti.conn);
+            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+        public static int Ekle(Randevular randevular)
+        {
+            int islem = 0;
+            try
+            {
+                SqlCommand komut = new SqlCommand("Ekle2", Baglanti.conn);
+                komut.CommandType = CommandType.StoredProcedure;
+                if (komut.Connection.State != ConnectionState.Open)
+                {
+                    komut.Connection.Open();
+                }
+                komut.Parameters.AddWithValue("RandevuTarihi", randevular.RandevuTarihi);
+                komut.Parameters.AddWithValue("Saat", randevular.Saat);
+                komut.Parameters.AddWithValue("HastaNo", randevular.HastaNo);
+                komut.Parameters.AddWithValue("DoktorNo", randevular.DoktorNo);
+                islem = komut.ExecuteNonQuery();
+            }
+            catch
+            {
+                islem = -1;
+            }
+            return islem;
+        }
+        public static bool Guncelle(Randevular randevular)
+        {
+            SqlCommand komut = new SqlCommand("Yenile2", DBaglanti.conn);
+            komut.CommandType = CommandType.StoredProcedure;
+
+            komut.Parameters.AddWithValue("RandevuNo", randevular.RandevuNo);
+            komut.Parameters.AddWithValue("RandevuTarihi", randevular.RandevuTarihi);
+            komut.Parameters.AddWithValue("Saat", randevular.Saat);
+            komut.Parameters.AddWithValue("HastaNo", randevular.HastaNo);
+            komut.Parameters.AddWithValue("DoktorNo", randevular.DoktorNo);
+            return DBaglanti.exec(komut);
+        }
+        public static bool Sil(Randevular randevular)
+        {
+            SqlCommand komut = new SqlCommand("Sil2", DBaglanti.conn);
+            komut.CommandType = CommandType.StoredProcedure;
+
+            komut.Parameters.AddWithValue("RandevuNo", randevular.RandevuNo);
+            return DBaglanti.exec(komut);
+        }
+        public static DataTable Ara(Randevular randevular)
+        {
+            SqlCommand komut = new SqlCommand("Ara2", DBaglanti.conn);
+            komut.CommandType = CommandType.StoredProcedure;
+
+            komut.Parameters.AddWithValue("HastaNo", randevular.HastaNo);
+           SqlDataAdapter dr= new SqlDataAdapter(komut);
+            dr.SelectCommand.CommandType= CommandType.StoredProcedure; 
+            DataTable dt = new DataTable();
+            dr.Fill(dt);
+            return dt;
+
+        }
+
+    }
+}
