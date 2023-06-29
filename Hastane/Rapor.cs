@@ -17,7 +17,7 @@ namespace Hastane
     {
         public Rapor()
         {
-            InitializeComponent();
+            InitializeComponent(); 
         }
 
         private void button1_Click(object sender, EventArgs e)
